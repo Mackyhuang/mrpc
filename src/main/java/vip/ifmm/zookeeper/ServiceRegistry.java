@@ -20,10 +20,10 @@ public class ServiceRegistry {
 
     private CountDownLatch countDownLatch = new CountDownLatch(1);
 
-    private String connectionAddress = null;
+    private String zookeeperAddress = null;
 
-    public ServiceRegistry(String connectionAddress){
-        this.connectionAddress = connectionAddress;
+    public ServiceRegistry(String zookeeperAddress){
+        this.zookeeperAddress = zookeeperAddress;
     }
     //TODO 全局zookeeper
     public void register(String nodeInfo){
@@ -40,7 +40,7 @@ public class ServiceRegistry {
         ZooKeeper zooKeeper = null;
 
         try {
-            zooKeeper = new ZooKeeper(connectionAddress, ConnectProperties.ZOOKEEPER_SESSION_TIMEOUT, new Watcher() {
+            zooKeeper = new ZooKeeper(zookeeperAddress, ConnectProperties.ZOOKEEPER_SESSION_TIMEOUT, new Watcher() {
                 @Override
                 public void process(WatchedEvent event) {
                     if (event.getState() == Event.KeeperState.SyncConnected) {

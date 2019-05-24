@@ -25,15 +25,15 @@ public class ServiceDiscovery {
 
     private CountDownLatch countDownLatch = new CountDownLatch(1);
 
-    private String connectAddress = null;
+    private String zookeeperAddress = null;
 
     private volatile List<String> infoList = new ArrayList<>();
 
     ZooKeeper zooKeeper = null;
 
     //TODO 全局zookeeper
-    public ServiceDiscovery(String connectAddress) {
-        this.connectAddress = connectAddress;
+    public ServiceDiscovery(String zookeeperAddress) {
+        this.zookeeperAddress = zookeeperAddress;
 
 
         zooKeeper = connect();
@@ -46,7 +46,7 @@ public class ServiceDiscovery {
         ZooKeeper zooKeeper = null;
 
         try {
-            zooKeeper = new ZooKeeper(connectAddress, ConnectProperties.ZOOKEEPER_SESSION_TIMEOUT, new Watcher() {
+            zooKeeper = new ZooKeeper(zookeeperAddress, ConnectProperties.ZOOKEEPER_SESSION_TIMEOUT, new Watcher() {
                 @Override
                 public void process(WatchedEvent event) {
                     if (event.getState() == Event.KeeperState.SyncConnected) {
