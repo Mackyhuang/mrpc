@@ -10,6 +10,46 @@ import vip.ifmm.protocol.Packet;
  */
 public class RpcResponsePacket extends Packet {
 
+    private String responseId;
+
+    private Object result;
+
+    private boolean success;
+
+    private String msg;
+
+    public String getResponseId() {
+        return responseId;
+    }
+
+    public void setResponseId(String responseId) {
+        this.responseId = responseId;
+    }
+
+    public Object getResult() {
+        return result;
+    }
+
+    public void setResult(Object result) {
+        this.result = result;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
     @Override
     public Byte getCommandType() {
         return PacketCommandTypeEnum.RPC_RESPONSE.getCode();

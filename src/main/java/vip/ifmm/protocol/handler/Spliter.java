@@ -3,7 +3,6 @@ package vip.ifmm.protocol.handler;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import vip.ifmm.protocol.Packet;
 import vip.ifmm.protocol.PacketPicker;
 
 /**
