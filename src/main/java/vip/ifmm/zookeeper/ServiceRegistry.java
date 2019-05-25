@@ -62,7 +62,7 @@ public class ServiceRegistry {
                     nodeInfo.getBytes(),
                     ZooDefs.Ids.OPEN_ACL_UNSAFE,
                     CreateMode.EPHEMERAL_SEQUENTIAL);
-            LOGGER.debug("create zookeeper node ({} => {})", createdNodeInfo, nodeInfo);
+            LOGGER.debug("创建zookeeper节点 ({} => {})", createdNodeInfo, nodeInfo);
         } catch (KeeperException | InterruptedException e) {
             LOGGER.error("", e);
         }
@@ -76,7 +76,7 @@ public class ServiceRegistry {
                         new byte[0],
                         ZooDefs.Ids.OPEN_ACL_UNSAFE,
                         CreateMode.PERSISTENT);
-                LOGGER.debug("create zookeeper root node ({})", root);
+                LOGGER.debug("创建zookeeper父节点 ({})", root);
             }
         } catch (KeeperException | InterruptedException e) {
             LOGGER.error("", e);

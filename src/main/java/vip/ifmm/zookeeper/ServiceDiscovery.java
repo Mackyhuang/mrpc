@@ -34,8 +34,6 @@ public class ServiceDiscovery {
     //TODO 全局zookeeper
     public ServiceDiscovery(String zookeeperAddress) {
         this.zookeeperAddress = zookeeperAddress;
-
-
         zooKeeper = connect();
         if (zooKeeper != null) {
             watchNode(zooKeeper);
@@ -80,27 +78,23 @@ public class ServiceDiscovery {
             LOGGER.debug("node data: {}", infoList);
             this.infoList = infoList;
             LOGGER.debug("Service discovery triggered updating connected server node.");
-            UpdateConnectedServer();
         } catch (KeeperException | InterruptedException e) {
             LOGGER.error("", e);
         }
     }
 
-    public void UpdateConnectedServer(){
-        //TODO
-    }
 
-    //负载
+    //获取zookeeper节点中的服务器地址
     public String discover() {
         String data = null;
         int size = infoList.size();
         if (size > 0) {
             if (size == 1) {
                 data = infoList.get(0);
-                LOGGER.debug("using only data: {}", data);
+                LOGGER.debug("当前唯一服务器节点: {}", data);
             } else {
                 data = infoList.get(ThreadLocalRandom.current().nextInt(size));
-                LOGGER.debug("using random data: {}", data);
+                LOGGER.debug("当前随机服务器节点: {}", data);
             }
         }
         return data;

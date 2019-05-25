@@ -16,7 +16,7 @@ public class RpcResponsePacket extends Packet {
 
     private boolean success;
 
-    private String msg;
+    private Throwable error;
 
     public String getResponseId() {
         return responseId;
@@ -42,12 +42,12 @@ public class RpcResponsePacket extends Packet {
         this.success = success;
     }
 
-    public String getMsg() {
-        return msg;
+    public Throwable getError() {
+        return error;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
+    public void setError(Throwable error) {
+        this.error = error;
     }
 
     @Override

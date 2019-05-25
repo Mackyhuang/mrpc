@@ -1,10 +1,9 @@
 package vip.ifmm.server;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.ServerChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -18,6 +17,7 @@ import org.springframework.context.ApplicationContextAware;
 import vip.ifmm.annotation.Expose;
 import vip.ifmm.protocol.handler.PacketDecoder;
 import vip.ifmm.protocol.handler.PacketEncoder;
+import vip.ifmm.server.handler.RpcRequestHandler;
 import vip.ifmm.zookeeper.ServiceRegistry;
 
 import java.util.Date;
@@ -62,7 +62,7 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
             Iterator<Object> iterator = interfaceList.values().iterator();
             while (iterator.hasNext()) {
                 Object Implementation = iterator.next();
-                String interfaceName = getClass().getAnnotation(Expose.class).value().getName();
+                String interfaceName = Implementation.getClass().getAnnotation(Expose.class).value().getName();
                 classRelationMap.put(interfaceName, Implementation);
             }
         }
@@ -76,8 +76,8 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         ServerBootstrap bootstrap = new ServerBootstrap();
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        NioEventLoopGroup bossGroup = new NioEventLoopGroup();
+        NioEventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             bootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
@@ -89,25 +89,26 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
                         protected void initChannel(NioSocketChannel channel) throws Exception {
                             channel.pipeline()
                                     .addLast(PacketDecoder.DECODER)
+                                    .addLast(new RpcRequestHandler(classRelationMap))
                                     .addLast(PacketEncoder.ENCODER);
                         }
                     });
 
             String[] result = serverEntrance.split(":");
             if (result.length != 2) {
-                LOGGER.error("Server entrance address wrong !");
+                LOGGER.error("服务器入口地址错误 !");
                 return;
             }
             String host = result[0];
             int port = Integer.parseInt(result[1]);
 
-            bootstrap.bind(host, port).sync().addListener(future -> {
-                if (future.isSuccess()) {
-                    LOGGER.info(new Date() + ": [" + host + ":" + port + "]绑定成功!");
-                } else {
-                    LOGGER.error(": [" + host + ":" + port + "]绑定失败!");
-                }
-            });
+            ChannelFuture future = bootstrap.bind(host, port).sync();
+            LOGGER.debug("[" + host + ":" + port + "]服务绑定成功!");
+            // 注册服务地址
+            if (registry != null) {
+                registry.register(serverEntrance);
+            }
+            future.channel().closeFuture().sync();
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();

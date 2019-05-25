@@ -1,6 +1,7 @@
 package vip.ifmm.zookeeper;
 
 import org.apache.zookeeper.*;
+import org.apache.zookeeper.data.Stat;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -81,5 +82,17 @@ public class Zookeeper {
             e.printStackTrace();
         }
 
+    }
+
+    @Test
+    public void exist(){
+        try {
+            Stat exist = zooKeeper.exists(ConnectProperties.ZOOKEEPER_BASE_PATH, false);
+            System.out.println(exist);
+        } catch (KeeperException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
