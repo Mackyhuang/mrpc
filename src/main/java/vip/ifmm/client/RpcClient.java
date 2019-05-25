@@ -61,16 +61,16 @@ public class RpcClient extends SimpleChannelInboundHandler<RpcResponsePacket> {
                         @Override
                         protected void initChannel(SocketChannel channel) throws Exception {
                             channel.pipeline()
-                                    .addLast(PacketDecoder.DECODER)
+                                    .addLast(new PacketDecoder())
                                     .addLast(RpcClient.this)
-                                    .addLast(PacketEncoder.ENCODER);
+                                    .addLast(new PacketEncoder());
                         }
                     });
 
-
             ChannelFuture future = bootstrap.connect(host, port).sync();
             future.channel().writeAndFlush(requestPacket).sync();
-            //等待服务器响应
+            //等待服务器响应ChannelFutureListener.CLOSE
+            //.addListener(ChannelFutureListener.CLOSE)这句执行，才能让future.channel().closeFuture().sync();继续运行
             countDownLatch.await();
             if(procedureResult != null){
                 future.channel().closeFuture().sync();

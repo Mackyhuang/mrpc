@@ -11,5 +11,5 @@ public interface ConnectProperties {
     String ZOOKEEPER_BASE_PATH = "/rpc";
     String ZOOKEEPER_DATA_PATH = ZOOKEEPER_BASE_PATH + "/data";
 
-    Integer ZOOKEEPER_SESSION_TIMEOUT = 2000;
+    Integer ZOOKEEPER_SESSION_TIMEOUT = 5000;
 }

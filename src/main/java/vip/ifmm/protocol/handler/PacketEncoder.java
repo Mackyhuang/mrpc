@@ -12,7 +12,6 @@ import vip.ifmm.protocol.PacketPicker;
  * <p>email: mackyhuang@163.com <p>
  * <p>date: 2019/5/23 </p>
  */
-@ChannelHandler.Sharable
 public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
     public static final PacketEncoder ENCODER = new PacketEncoder();

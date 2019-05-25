@@ -14,7 +14,6 @@ import java.util.List;
  * <p>email: mackyhuang@163.com <p>
  * <p>date: 2019/5/23 </p>
  */
-@ChannelHandler.Sharable
 public class PacketDecoder extends ByteToMessageDecoder {
 
     public static final PacketDecoder DECODER = new PacketDecoder();

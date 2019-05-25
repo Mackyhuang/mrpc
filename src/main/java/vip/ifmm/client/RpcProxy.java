@@ -33,7 +33,37 @@ public class RpcProxy implements InvocationHandler{
         return (T) Proxy.newProxyInstance(
                 interfaceClass.getClassLoader(),
                 new Class<?>[]{interfaceClass},
-                this);
+                new InvocationHandler() {
+                    @Override
+                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                        RpcRequestPacket requestPacket = new RpcRequestPacket();
+                        requestPacket.setRequestId(UUID.randomUUID().toString());
+                        requestPacket.setClassName(method.getDeclaringClass().getName());
+                        requestPacket.setMethodName(method.getName());
+                        requestPacket.setParameterTypes(method.getParameterTypes());
+                        requestPacket.setParameters(args);
+
+                        if (rpcConnectAddress == null) {
+                            rpcConnectAddress = discovery.discover();
+                        }
+                        String[] result = rpcConnectAddress.split(":");
+                        if (result.length != 2) {
+                            LOGGER.error("服务器入口地址错误 !");
+                            return null;
+                        }
+                        String host = result[0];
+                        int port = Integer.parseInt(result[1]);
+                        //使用客户端向服务器发送rpc请求
+                        RpcClient rpcClient = new RpcClient(host, port);
+                        RpcResponsePacket response = rpcClient.send(requestPacket);
+
+                        if (response.isSuccess()) {
+                            return response.getResult();
+                        } else {
+                            throw response.getError();
+                        }
+                    }
+                });
     }
 
     @Override

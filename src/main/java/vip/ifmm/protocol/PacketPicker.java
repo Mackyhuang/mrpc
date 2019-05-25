@@ -1,6 +1,7 @@
 package vip.ifmm.protocol;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
 import vip.ifmm.enums.PacketCommandTypeEnum;
 import vip.ifmm.enums.SerializerTypeEnum;
 import vip.ifmm.protocol.request.RpcRequestPacket;

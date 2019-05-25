@@ -1,5 +1,6 @@
 package vip.ifmm.server.handler;
 
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -42,7 +43,8 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<RpcRequestPac
             responsePacket.setSuccess(false);
             responsePacket.setError(throwable);
         }
-        channelHandlerContext.channel().writeAndFlush(responsePacket);
+        //.addListener(ChannelFutureListener.CLOSE)这句执行，才能让future.channel().closeFuture().sync();继续运行
+        channelHandlerContext.channel().writeAndFlush(responsePacket).addListener(ChannelFutureListener.CLOSE);
     }
 
     private Object procedureCall(RpcRequestPacket rpcRequestPacket) throws InvocationTargetException {

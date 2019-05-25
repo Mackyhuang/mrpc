@@ -15,6 +15,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import vip.ifmm.annotation.Expose;
+import vip.ifmm.protocol.handler.PacketCoder;
 import vip.ifmm.protocol.handler.PacketDecoder;
 import vip.ifmm.protocol.handler.PacketEncoder;
 import vip.ifmm.server.handler.RpcRequestHandler;
@@ -88,9 +89,8 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
                         @Override
                         protected void initChannel(NioSocketChannel channel) throws Exception {
                             channel.pipeline()
-                                    .addLast(PacketDecoder.DECODER)
-                                    .addLast(new RpcRequestHandler(classRelationMap))
-                                    .addLast(PacketEncoder.ENCODER);
+                                    .addLast(PacketCoder.CODER)
+                                    .addLast(new RpcRequestHandler(classRelationMap));
                         }
                     });
 
