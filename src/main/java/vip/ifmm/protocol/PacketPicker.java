@@ -8,6 +8,7 @@ import vip.ifmm.protocol.request.RpcRequestPacket;
 import vip.ifmm.protocol.response.RpcResponsePacket;
 import vip.ifmm.serializer.Serializer;
 import vip.ifmm.serializer.impl.JsonSerializer;
+import vip.ifmm.serializer.impl.ProtostuffSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ public class PacketPicker {
 
     public static final PacketPicker PICKER = new PacketPicker();
 
-    private Byte serializerType = 1;
+    private Byte serializerType = 2;
 
     public static final Integer MAGIC_NUM = 0xaccababe;
 
@@ -36,6 +37,7 @@ public class PacketPicker {
 
         serializerStore = new HashMap<>();
         serializerStore.put(SerializerTypeEnum.JSON_SERIALIZER.getCode(), new JsonSerializer());
+        serializerStore.put(SerializerTypeEnum.PROTOSTUFF_SERIALIZER.getCode(), new ProtostuffSerializer());
     }
 
     public void encode(ByteBuf byteBuf, Packet packet){
